@@ -1,0 +1,123 @@
+package view;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+
+import model.Board;
+import model.MovableTetrisPiece;
+import model.TetrisPiece;
+
+public class UpNextPanel extends JPanel implements Observer {
+    
+    /**Background color. */
+    private static final Color DARK_PURPLE = new Color(28, 0, 38); 
+    
+    /**Border color. */
+    private static final Color WHITE = new Color(255, 255, 255); 
+    
+    /** The default size for this JPanel. */
+    private static final Dimension DEFAULT_SIZE = new Dimension(200, 100);
+    
+    /** Magic number 200. */
+    private static final int TWO_HUNDRED = 200;
+    
+    /** Empty border for padding. */
+    private final Border myEmptyBorder = BorderFactory.createEmptyBorder(50, 50, 50, 50);
+    
+    /** Lined Border. */
+    private final Border myLineBorder = BorderFactory.createLineBorder(WHITE, 3);
+    
+    /** Variable for movable tetris piece. */ 
+    private MovableTetrisPiece myTetrisPiece; 
+    
+    private String tetrisString; 
+    
+    /** HashMap to help design Tetris pieces. */
+    private HashMap<Character, Color> myTetrisMap; 
+    
+    public UpNextPanel() {
+        super();
+        setBackground(DARK_PURPLE);
+        setPreferredSize(DEFAULT_SIZE);
+        setBorder(BorderFactory.createCompoundBorder(myEmptyBorder, myLineBorder));
+        getTetrisPieces(); 
+    }
+    
+    /**
+     * Method that populates and returns hashmap of designed tetris
+     * pieces. 
+     * @return myTetrisPieces hashmap. 
+     */
+    private void getTetrisPieces() {
+        
+        myTetrisMap = new HashMap<>(); 
+        final Color brightOrange = new Color(219, 65, 0); 
+        final Color lightBlue = new Color(96, 255, 233); 
+        final Color magenta = new Color(246, 92, 235); 
+        final Color lightGreen = new Color(65, 219, 0);
+        final Color brightYellow = new Color(255, 255, 119);
+        final Color brightRed = new Color(255, 0, 0);
+        final Color darkBlue = new Color(31, 0, 246); 
+        
+        myTetrisMap.put('I', lightBlue);
+        myTetrisMap.put('J', darkBlue);
+        myTetrisMap.put('L', brightOrange);
+        myTetrisMap.put('O', brightYellow);
+        myTetrisMap.put('S', lightGreen);
+        myTetrisMap.put('T', magenta);
+        myTetrisMap.put('Z', brightRed);
+        
+
+          
+        
+    }
+
+    @Override
+    public void update(final Observable theObs, final Object theArg) {
+        if (theObs instanceof Board) {
+            if (theArg instanceof MovableTetrisPiece) {
+                myTetrisPiece = (MovableTetrisPiece) theArg; 
+                System.out.println(myTetrisPiece.toString());
+                tetrisString = myTetrisPiece.toString();
+                repaint(); 
+            }
+        }
+        
+    }
+    
+    @Override
+    public void paintComponent(final Graphics theGraphics) {
+        super.paintComponent(theGraphics);
+        final Graphics2D g2d = (Graphics2D) theGraphics; 
+//        final int xPosition = ; 
+//        final int yPostion = getHeight() / myTetrisPiece.getHeight(); 
+        
+        for (char c : tetrisString.toCharArray()) {
+            if (myTetrisMap.containsKey(c)) {
+                final Rectangle rect = new Rectangle(getX(), getY(), 
+                               30, 30); 
+                              
+                g2d.setColor(WHITE); 
+                g2d.draw(rect);
+            } 
+            
+        }
+  
+
+        
+    }
+    
+
+}

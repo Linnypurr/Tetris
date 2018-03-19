@@ -1,0 +1,87 @@
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+public class TetrisGUI {
+    
+    private static final int FONT_SIZE = 16; 
+
+    private static final Color BLACK = new Color(1, 3, 8); 
+    
+    private static final Color WHITE = new Color(255, 255, 255); 
+    
+    private final int myWidth = 600; 
+    
+    private final int myHeight = 800; 
+    
+    private final JFrame myMainFrame = new JFrame("Tetris"); 
+    
+    private final JPanel myEastPanel = new JPanel(); 
+    
+    private final List<JLabel> myLabelList = new ArrayList<>(); 
+    
+    public void start() {
+        myMainFrame.setSize(myWidth, myHeight);
+        //myMainFrame.setMinimumSize(new Dimension(myWidth, myHeight));
+        myMainFrame.setResizable(false);
+        myMainFrame.getContentPane().setBackground(BLACK);
+        myMainFrame.setVisible(true);
+        myMainFrame.setLayout(new BorderLayout());
+        
+        //East - Put in separate method?
+        myEastPanel.setLayout(new GridBagLayout()); 
+        GridBagConstraints constraints = new GridBagConstraints(); 
+        myEastPanel.setBackground(BLACK);
+        myEastPanel.add(setNextPanel());
+        myEastPanel.add(setInstructions(), BorderLayout.CENTER); 
+        myMainFrame.add(myEastPanel, BorderLayout.EAST); 
+        myMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+    private JPanel setInstructions() {
+        final JPanel instructPanel = new JPanel(); 
+        instructPanel.setLayout(new GridLayout(0, 1));
+        instructPanel.setBackground(BLACK);
+        //instructPanel.setSize(new Dimension(100, 200));
+        final JLabel instructLabel = new JLabel("Instructions"); 
+        myLabelList.add(instructLabel);
+        final JLabel rightLabel = new JLabel("Move right: Right arrow key or 'D'");
+        myLabelList.add(rightLabel);
+        final JLabel rotateLabel = new JLabel("Rotate: Up arrow key or 'W'");
+        myLabelList.add(rotateLabel);
+        final JLabel leftLabel = new JLabel("Move left: Left arrow key or 'A'"); 
+        myLabelList.add(leftLabel);
+        final JLabel downLabel = new JLabel("Speed down: Down arrow key or 'S'"); 
+        myLabelList.add(downLabel); 
+        
+        //Adjust and add Labels
+        for(JLabel label : myLabelList) {
+            label.setFont(new Font("Monospace", Font.BOLD, FONT_SIZE));
+            label.setForeground(WHITE);
+            label.setHorizontalAlignment(JLabel.CENTER);
+            label.setVerticalAlignment(JLabel.CENTER);
+            instructPanel.add(label); 
+        }
+        return instructPanel; 
+    }
+    
+    private JPanel setNextPanel() {
+        final JPanel upNextPanel = new JPanel(); 
+        upNextPanel.setBackground(BLACK);
+        upNextPanel.setBorder(BorderFactory.createLineBorder(WHITE, 3));
+        return upNextPanel; 
+    }
+ }

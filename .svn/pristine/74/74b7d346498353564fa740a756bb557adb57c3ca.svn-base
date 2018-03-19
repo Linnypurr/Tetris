@@ -1,0 +1,174 @@
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+
+//import view.BoardPanel.MoveKeyListener;
+
+public class TetrisGUI {
+    
+    private static final int FONT_SIZE = 8; 
+
+    private static final Color DARK_PURPLE = new Color(28, 0,38); 
+    
+    private static final Color WHITE = new Color(255, 255, 255); 
+    
+    private final int myWidth = 800; 
+    
+    private final int myHeight = 800; 
+    
+    private final JFrame myMainFrame = new JFrame("Tetris"); 
+    
+    private BoardPanel myBoardPanel = new BoardPanel(); 
+    
+    private final List<JLabel> myLabelList = new ArrayList<>(); 
+    
+    public void start() {
+        
+        setEastPanel(); 
+        
+        myMainFrame.setSize(myWidth, myHeight);
+        //myMainFrame.setMinimumSize(new Dimension(myWidth, myHeight));
+        myMainFrame.setResizable(false);
+        myMainFrame.getContentPane().setBackground(DARK_PURPLE);
+        myMainFrame.setVisible(true);
+        myMainFrame.setLayout(new BorderLayout());
+        myMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myMainFrame.add(myBoardPanel, BorderLayout.CENTER);
+        myMainFrame.addKeyListener(new MoveKeyListener());
+    }
+    
+    private void setEastPanel() {
+        final JComponent eastPanel = new JPanel(); 
+        final BoxLayout boxLayout = new BoxLayout(eastPanel, BoxLayout.PAGE_AXIS); 
+        eastPanel.setLayout(boxLayout);
+        eastPanel.setBackground(DARK_PURPLE);
+        
+        eastPanel.add(setNextPanel()); 
+        
+        eastPanel.add(Box.createVerticalStrut(50)); 
+        
+        //eastPanel.add(new InstructionPanel());
+        
+        eastPanel.add(setInstructions());
+        
+        myMainFrame.add(eastPanel, BorderLayout.EAST); 
+        
+    }
+    
+    private JPanel setInstructions() {
+        final JPanel instructPanel = new JPanel(); 
+        instructPanel.setPreferredSize(new Dimension(300, 400));
+        instructPanel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+        instructPanel.setLayout(new GridLayout(0, 1));
+        instructPanel.setBackground(DARK_PURPLE); 
+        final JLabel instructLabel = new JLabel("Instructions"); 
+        myLabelList.add(instructLabel);
+        final JLabel rightLabel = new JLabel("Move right: Right arrow key or 'D'");
+        myLabelList.add(rightLabel);
+        final JLabel rotateLabel = new JLabel("Rotate: Up arrow key or 'W'");
+        myLabelList.add(rotateLabel);
+        final JLabel leftLabel = new JLabel("Move left: Left arrow key or 'A'"); 
+        myLabelList.add(leftLabel);
+        final JLabel downLabel = new JLabel("Speed down: Down arrow key or 'S'"); 
+        myLabelList.add(downLabel); 
+        
+        //Adjust and add Labels
+        for(JLabel label : myLabelList) {
+            label.setFont(new Font("Monospace", Font.BOLD, FONT_SIZE));
+            label.setForeground(WHITE);
+            label.setHorizontalAlignment(JLabel.CENTER);
+            label.setVerticalAlignment(JLabel.CENTER);
+            instructPanel.add(label); 
+        }
+        return instructPanel; 
+    }
+    
+    private JPanel setNextPanel() {
+        final JPanel upNextPanel = new JPanel(); 
+        upNextPanel.setBackground(DARK_PURPLE);
+        upNextPanel.setPreferredSize(new Dimension(200, 200));
+        final Border emptyBorder = BorderFactory.createEmptyBorder(50, 50, 50, 50);
+        final Border lineBorder = BorderFactory.createLineBorder(WHITE, 3);
+        upNextPanel.setBorder(BorderFactory.createCompoundBorder(emptyBorder, lineBorder));
+        return upNextPanel; 
+    }
+//    
+//    private class InstructionPanel extends JPanel {
+//        
+//        private final int WIDTH = 300; 
+//        
+//        private final int HEIGHT = 400; 
+//        
+//        private String instruct = "How to play:";
+//        
+//        private String right = "Move right: Right arrow key or D";
+//        
+//        private String rotate = "Rotate: Up arrow key or W";
+//        
+//        private String left = "Move left: Left arrow key or A";
+//        
+//        private String down = "Speed down: Down arrow key or S"; 
+//        
+//        public InstructionPanel() {
+//            super();
+//            setPreferredSize(new Dimension(WIDTH, HEIGHT));
+//            setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+//            setBackground(DARK_PURPLE); 
+//        }
+//        
+//        @Override
+//        public void paintComponent(final Graphics theGraphics) {
+//            super.paintComponent(theGraphics); 
+//            final Graphics2D g2d = (Graphics2D) theGraphics; 
+//            
+//            g2d.setFont(new Font("Monospace", Font.BOLD, 14));
+//            g2d.setColor(WHITE);
+//            g2d.drawString(instruct, WIDTH / 2, HEIGHT / 5);
+//            
+//            
+//        }
+//    }
+    private class MoveKeyListener extends KeyAdapter {
+        
+        public void keyPressed(final KeyEvent theEvent) {
+            if (theEvent.getKeyCode() == KeyEvent.VK_UP
+                            || theEvent.getKeyCode() == KeyEvent.VK_W) {
+                myBoardPanel.myBoard.rotate();
+                
+            } else if (theEvent.getKeyCode() == KeyEvent.VK_RIGHT
+                            || theEvent.getKeyCode() == KeyEvent.VK_D) {
+                myBoardPanel.myBoard.right();
+                
+            } else if (theEvent.getKeyCode() == KeyEvent.VK_LEFT
+                            || theEvent.getKeyCode() == KeyEvent.VK_A) {
+                
+                myBoardPanel.myBoard.left();
+                
+            } else if (theEvent.getKeyCode() == KeyEvent.VK_DOWN
+                            || theEvent.getKeyCode() == KeyEvent.VK_S) {
+                myBoardPanel.myBoard.down();
+            }
+        }
+    }// End MoveKeyListener
+ }

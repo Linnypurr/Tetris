@@ -1,0 +1,100 @@
+package view;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+
+import model.Board;
+
+public class ScorePanel extends JPanel implements Observer {
+    
+    /** Magic number 4. */
+    private static final int FOUR = 4; 
+    
+    /** Magic number 2. */
+    private static final int TWO = 2; 
+    
+    /** Magic number 100. */
+    private static final int ONE_HUNDRED = 100;
+    
+    /** Magic number 200. */
+    private static final int TWO_HUNDRED = 200;
+    
+    /** The default size for this JPanel. */
+    private static final Dimension DEFAULT_SIZE = new Dimension(200, 100);
+    
+    /** Background Color of GUI and Panels. */
+    private static final Color DARK_PURPLE = new Color(28, 0, 38); 
+    
+    /** Border Color. */
+    private static final Color WHITE = new Color(255, 255, 255); 
+    
+    /** Font size. */
+    private static final int FONT_SIZE = 12; 
+    
+    /** Default font used. */ 
+    private final Font myFont = new Font("Monospace", Font.BOLD, FONT_SIZE);
+    
+    /** Empty border for padding. */
+    private final Border myEmptyBorder = BorderFactory.createEmptyBorder(50, 50, 50, 50);
+    
+    /** Line Border. */ 
+    private final Border myLineBorder = BorderFactory.createLineBorder(WHITE, 3);
+    
+    /** Title Border. */ 
+//    private final TitledBorder myTitleBorder = BorderFactory.createTitledBorder(myLineBorder, 
+//          " Score: ", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER); 
+    
+    private int myScore; 
+    
+    private Integer[] myIntegers; 
+    
+    public ScorePanel() {
+        super(); 
+        setPreferredSize(DEFAULT_SIZE); 
+        setBackground(DARK_PURPLE); 
+//        myTitleBorder.setTitleColor(WHITE);
+//        myTitleBorder.setTitleFont(myFont);
+//        setBorder(BorderFactory.createCompoundBorder(myEmptyBorder, myTitleBorder));
+        myScore = 0; 
+        myIntegers = new Integer[FOUR]; 
+    }
+    
+    @Override
+    public void paintComponent(final Graphics theGraphics) {
+        super.paintComponent(theGraphics);
+        final Graphics2D g2d = (Graphics2D) theGraphics; 
+        
+        g2d.setFont(myFont);
+        g2d.setColor(WHITE);
+        g2d.drawString("Current Score: " +  myScore, getWidth() / FOUR, getHeight() / TWO);
+    }
+ 
+    @Override
+    public void update(final Observable theObs, final Object theArg) {
+        if (theObs instanceof Board) {
+            if (theArg instanceof Integer[]) {
+                myIntegers = (Integer[]) theArg; 
+            }
+        }
+    }
+    
+    private void calculateScore() { 
+        if (myIntegers.length > 0) {
+            myScore = (myIntegers.length * ONE_HUNDRED) + myScore; 
+            if (myIntegers.length == FOUR) { 
+                myScore = (myIntegers.length * TWO_HUNDRED) + myScore; 
+            }
+        }
+    }
+
+}

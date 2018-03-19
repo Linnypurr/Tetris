@@ -1,0 +1,244 @@
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.border.Border;
+
+//import view.BoardPanel.MoveKeyListener;
+
+/**
+ * Main GUI for tetris sets up frame and other Panels.
+ * 
+ * @author Lindsee Purnell
+ * @version tetris1.0
+ */
+public class TetrisGUI {
+    
+    /** Magic number 50. */
+    private static final int FIFTY = 50; 
+    
+    /** Magic number 300. */
+    private static final int THREE_HUNDRED = 300; 
+    
+    /** Magic number 200. */
+    private static final int TWO_HUNDRED = 200;
+    
+    /** Font size. */
+    private static final int FONT_SIZE = 12; 
+    
+    /**Background color. */
+    private static final Color DARK_PURPLE = new Color(28, 0, 38); 
+    
+    /**Border color. */
+    private static final Color WHITE = new Color(255, 255, 255); 
+    
+    /** Empty border for padding. */
+    private final Border myEmptyBorder = BorderFactory.createEmptyBorder(50, 50, 50, 50);
+    
+    /**JFrame width. */
+    private final int myWidth = 800; 
+    
+    /** JFrame height. */
+    private final int myHeight = 800; 
+    
+    /** JFrame with title. */
+    private final JFrame myMainFrame = new JFrame("Tetris"); 
+    
+    /**Creation of boardPanel. */
+    private BoardPanel myBoardPanel = new BoardPanel(); 
+    
+    /** List of Labels. */
+    private final List<JLabel> myLabelList = new ArrayList<>(); 
+    
+    /** 
+     * Method to start the creation of the GUI. 
+     */
+    public void start() {
+        
+        setEastPanel(); 
+        
+        myMainFrame.setSize(myWidth, myHeight);
+        //myMainFrame.setMinimumSize(new Dimension(myWidth, myHeight));
+        myMainFrame.setResizable(false);
+        myMainFrame.getContentPane().setBackground(DARK_PURPLE);
+        myMainFrame.setVisible(true);
+        myMainFrame.setLayout(new BorderLayout());
+        myMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myMainFrame.add(myBoardPanel, BorderLayout.CENTER);
+        myMainFrame.addKeyListener(new MoveKeyListener());
+    }
+    
+    /**
+     * Method to create Panel in the East of the GUI. 
+     */
+    private void setEastPanel() {
+        final JComponent eastPanel = new JPanel(); 
+        final BoxLayout boxLayout = new BoxLayout(eastPanel, BoxLayout.PAGE_AXIS); 
+        eastPanel.setLayout(boxLayout);
+        eastPanel.setBackground(DARK_PURPLE);
+        
+        eastPanel.add(setNextPanel()); 
+        
+        eastPanel.add(Box.createVerticalStrut(FIFTY)); 
+        
+        //eastPanel.add(new InstructionPanel());
+        
+        eastPanel.add(setInstructions());
+        
+        myMainFrame.add(eastPanel, BorderLayout.EAST); 
+        
+    }
+    
+    /**
+     * JPanel to create Instruction Panel on
+     * how to play the game. 
+     * 
+     * @return instructions Panel
+     */
+    private JPanel setInstructions() {
+        final JPanel instructPanel = new JPanel(); 
+        instructPanel.setPreferredSize(new Dimension(THREE_HUNDRED, THREE_HUNDRED));
+        instructPanel.setBorder(myEmptyBorder);
+        final BoxLayout boxLayout = new BoxLayout(instructPanel, BoxLayout.PAGE_AXIS); 
+        instructPanel.setLayout(boxLayout);
+        instructPanel.setBackground(DARK_PURPLE); 
+        final JLabel instructLabel = new JLabel("Instructions"); 
+//        myLabelList.add(instructLabel);
+//        final JLabel rightLabel = new JLabel("Move right: Right arrow key or 'D'");
+//        myLabelList.add(rightLabel);
+//        final JLabel rotateLabel = new JLabel("Rotate: Up arrow key or 'W'");
+//        myLabelList.add(rotateLabel);
+//        final JLabel leftLabel = new JLabel("Move left: Left arrow key or 'A'"); 
+//        myLabelList.add(leftLabel);
+//        final JLabel downLabel = new JLabel("Speed down: Down arrow key or 'S'"); 
+//        myLabelList.add(downLabel); 
+        
+        //JTextArea
+        final JTextArea text = new JTextArea(); 
+        text.setEditable(false);
+        text.setText("Move right: Right arrow key or D\nRotate: Up arrow key or W"
+                        + "\nMove left: Left arrow key or A\n"
+                        + "Speed down: Down arrow key or S");
+        text.setForeground(WHITE);
+        text.setBackground(DARK_PURPLE);
+        text.setFont(new Font("Monospace", Font.BOLD, FONT_SIZE));
+        instructLabel.setForeground(WHITE);
+        instructLabel.setBackground(DARK_PURPLE);
+        instructLabel.setHorizontalAlignment(JLabel.CENTER);
+        instructLabel.setVerticalAlignment(JLabel.CENTER);
+        instructLabel.setFont(new Font("Monospace", Font.BOLD, FONT_SIZE));
+        instructPanel.add(instructLabel); 
+        instructPanel.add(text); 
+//        
+//        //Adjust and add Labels
+//        for (final JLabel label : myLabelList) {
+//            label.setFont(new Font("Monospace", Font.BOLD, FONT_SIZE));
+//            label.setForeground(WHITE);
+//            label.setHorizontalAlignment(JLabel.CENTER);
+//            label.setVerticalAlignment(JLabel.CENTER);
+//            instructPanel.add(label); 
+//        }
+        return instructPanel; 
+    }
+    
+    /**
+     * Helper method to show the next tetris
+     * piece to be in play. 
+     * 
+     * @return upNextPanel. 
+     */
+    private JPanel setNextPanel() {
+        final JPanel upNextPanel = new JPanel(); 
+        upNextPanel.setBackground(DARK_PURPLE);
+        upNextPanel.setPreferredSize(new Dimension(TWO_HUNDRED, TWO_HUNDRED));
+        final Border emptyBorder = BorderFactory.createEmptyBorder(50, 50, 50, 50);
+        final Border lineBorder = BorderFactory.createLineBorder(WHITE, 3);
+        upNextPanel.setBorder(BorderFactory.createCompoundBorder(emptyBorder, lineBorder));
+        return upNextPanel; 
+    }
+//    Dont delete yet could be useful in part B
+    
+//    private class InstructionPanel extends JPanel {
+//        
+//        private final int WIDTH = 300; 
+//        
+//        private final int HEIGHT = 400; 
+//        
+//        private String instruct = "How to play:";
+//        
+//        private String right = "Move right: Right arrow key or D";
+//        
+//        private String rotate = "Rotate: Up arrow key or W";
+//        
+//        private String left = "Move left: Left arrow key or A";
+//        
+//        private String down = "Speed down: Down arrow key or S"; 
+//        
+//        public InstructionPanel() {
+//            super();
+//            setPreferredSize(new Dimension(WIDTH, HEIGHT));
+//            setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+//            setBackground(DARK_PURPLE); 
+//        }
+//        
+//        @Override
+//        public void paintComponent(final Graphics theGraphics) {
+//            super.paintComponent(theGraphics); 
+//            final Graphics2D g2d = (Graphics2D) theGraphics; 
+//            
+//            g2d.setFont(new Font("Monospace", Font.BOLD, 14));
+//            g2d.setColor(WHITE);
+//            g2d.drawString(instruct, WIDTH / 2, HEIGHT / 5);
+//            
+//            
+//        }
+//    }
+    
+    /**
+     * Private inner class to move the pieces from 
+     * key presses. 
+     * 
+     * @author Lindsee Purnell
+     * @version Tetris1.0
+     */
+    private class MoveKeyListener extends KeyAdapter {
+        /**
+         * Reads wasd and arrowkeys.  
+         */
+        @Override
+        public void keyPressed(final KeyEvent theEvent) {
+            if (theEvent.getKeyCode() == KeyEvent.VK_UP
+                            || theEvent.getKeyCode() == KeyEvent.VK_W) {
+                myBoardPanel.myBoard.rotate();
+                
+            } else if (theEvent.getKeyCode() == KeyEvent.VK_RIGHT
+                            || theEvent.getKeyCode() == KeyEvent.VK_D) {
+                myBoardPanel.myBoard.right();
+                
+            } else if (theEvent.getKeyCode() == KeyEvent.VK_LEFT
+                            || theEvent.getKeyCode() == KeyEvent.VK_A) {
+                
+                myBoardPanel.myBoard.left();
+                
+            } else if (theEvent.getKeyCode() == KeyEvent.VK_DOWN
+                            || theEvent.getKeyCode() == KeyEvent.VK_S) {
+                myBoardPanel.myBoard.down();
+            }
+        }
+    } // End MoveKeyListener
+}

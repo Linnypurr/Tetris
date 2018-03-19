@@ -1,0 +1,102 @@
+package view;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+import javax.swing.border.Border;
+
+import model.Board;
+
+public class BoardPanel extends JPanel implements Observer {
+    
+    private static final Color DARK_PURPLE = new Color(28, 0,38); 
+    
+    private static final Color BLACK = new Color(1, 3, 8); 
+    
+    private static final Color WHITE = new Color(255, 255, 255); 
+    
+    private final Board myBoard; 
+    
+    private final Border myEmptyBorder = BorderFactory.createEmptyBorder(50, 50, 50, 50);
+    
+    private final Border myLineBorder = BorderFactory.createLineBorder(WHITE, 3);
+    
+    private final Timer myTimer; 
+    
+    private final int myWidth = 350;
+    
+    private final int myHeight = 700; 
+    
+    private char[] myCharArray; 
+    
+    public BoardPanel() {
+        super(); 
+        setPreferredSize(new Dimension(myWidth, myHeight)); 
+        setBackground(BLACK); 
+        setBorder(BorderFactory.createCompoundBorder(myEmptyBorder, myLineBorder)); 
+        addKeyListener(new MoveKeyListener()); 
+        
+        myTimer = new Timer(0, new TimeListener()); 
+        
+        myBoard = new Board(myWidth, myHeight); 
+        myBoard.newGame();
+    }
+    
+    @Override
+    public void paintComponent(final Graphics theGraphics) {
+        super.paintComponent(theGraphics);
+        final Graphics2D g2d = (Graphics2D) theGraphics; 
+    }
+    
+    @Override
+    public void update(final Observable theObj, final Object theArg) { 
+
+        if (theArg instanceof String) {
+            myCharArray = ((String) theArg).toCharArray();
+        }
+    }
+    
+    private class MoveKeyListener extends KeyAdapter {
+        
+        public void keyPressed(final KeyEvent theEvent) {
+            if (theEvent.getKeyCode() == KeyEvent.VK_UP
+                            || theEvent.getKeyCode() == KeyEvent.VK_W) {
+                // call rotate
+                
+            } else if (theEvent.getKeyCode() == KeyEvent.VK_RIGHT
+                            || theEvent.getKeyCode() == KeyEvent.VK_D) {
+                // call right
+                
+            } else if (theEvent.getKeyCode() == KeyEvent.VK_LEFT
+                            || theEvent.getKeyCode() == KeyEvent.VK_A) {
+                
+                // call Left
+                
+            } else if (theEvent.getKeyCode() == KeyEvent.VK_DOWN
+                            || theEvent.getKeyCode() == KeyEvent.VK_S) {
+                // call down
+            }
+        }
+    }// End MoveKeyListener
+    
+    private class TimeListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent theEvent) {
+            // Keep falling 
+            myBoard.drop(); 
+        }
+        
+    }
+}

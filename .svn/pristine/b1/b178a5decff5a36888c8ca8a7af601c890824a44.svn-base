@@ -1,0 +1,212 @@
+package view;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.List;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+import javax.swing.border.Border;
+
+import model.Board;
+
+/**
+ * 
+ * @author Lindsee Purnell
+ * @version Tetris1.0
+ */
+public class BoardPanel extends JPanel implements Observer {
+    
+    /** Background Color of GUI and Panels. */
+    private static final Color DARK_PURPLE = new Color(28, 0,38); 
+    
+    /** Alternative Background Color. */
+    private static final Color BLACK = new Color(1, 3, 8); 
+    
+    /** Border Color. */
+    private static final Color WHITE = new Color(255, 255, 255); 
+    
+    /** Instance of Board class. */ 
+    public final Board myBoard; 
+    
+    /** Empty border for padding. */
+    private final Border myEmptyBorder = BorderFactory.createEmptyBorder(50, 50, 50, 50);
+    
+    /** Lined border. */
+    private final Border myLineBorder = BorderFactory.createLineBorder(WHITE, 3);
+    
+    /** Timer for movement of pieces and speed of game. */
+    private final Timer myTimer; 
+    
+    /** Width of panel. */
+    private final int myWidth = 250;
+    
+    /** Height of panel. */
+    private final int myHeight = 575; 
+    
+    /**Size of tetris individual blocks. */
+    private int myBlockSize; 
+    
+    //private Map<Character, ArrayList<Color>> myTetrisPieces; 
+    private HashMap<Character, Color> myTetrisPieces; 
+    
+    private char[] myCharArray; 
+    
+    private String currentBoardString; 
+    
+    public BoardPanel() {
+        super(); 
+        myBoard = new Board(); 
+     
+        setPreferredSize(new Dimension(myWidth, myHeight)); 
+        setBackground(DARK_PURPLE); 
+        setBorder(myEmptyBorder); 
+//        addKeyListener(new MoveKeyListener()); 
+        
+        myTimer = new Timer(1000, new TimeListener()); 
+        myTetrisPieces = getTetrisPieces(); 
+        
+        
+        myBlockSize = myWidth / myBoard.getWidth();
+        
+        intilize(); 
+        
+    }
+    
+    private void intilize() {
+        
+        myBoard.newGame();
+        myTimer.start();
+    }
+    
+    private HashMap<Character, Color> getTetrisPieces() {
+        
+        myTetrisPieces = new HashMap<>(); 
+        final Color brightOrange = new Color(219, 65, 0); 
+        final Color lightBlue = new Color(96, 255, 233); 
+        final Color magenta = new Color(246, 92, 235); 
+        final Color lightGreen = new Color(65, 219, 0);
+        final Color brightYellow = new Color(255, 255, 119);
+        final Color brightRed = new Color(255, 0, 0);
+        final Color darkGreen = new Color(0, 246, 86);
+        final Color darkBlue = new Color(31, 0, 246); 
+        
+//        myTetrisPieces.put('I', new ArrayList<>(Arrays.asList(brightOrange, lightBlue)));
+//        myTetrisPieces.put('J', new ArrayList<>(Arrays.asList(brightYellow, darkBlue)));
+//        myTetrisPieces.put('L', new ArrayList<>(Arrays.asList(lightBlue, brightOrange)));
+//        myTetrisPieces.put('O', new ArrayList<>(Arrays.asList(darkBlue, brightYellow)));
+//        myTetrisPieces.put('S', new ArrayList<>(Arrays.asList(magenta, lightGreen)));
+//        myTetrisPieces.put('T', new ArrayList<>(Arrays.asList(lightGreen, magenta)));
+//        myTetrisPieces.put('Z', new ArrayList<>(Arrays.asList(darkGreen, brightRed)));
+        
+        myTetrisPieces.put('I', lightBlue);
+        myTetrisPieces.put('J', darkBlue);
+        myTetrisPieces.put('L', brightOrange);
+        myTetrisPieces.put('O', brightYellow);
+        myTetrisPieces.put('S', lightGreen);
+        myTetrisPieces.put('T', magenta);
+        myTetrisPieces.put('Z', brightRed);
+        
+        return myTetrisPieces; 
+    }
+    
+    @Override
+    public void update(final Observable theObj, final Object theArg) { 
+
+        if (theArg instanceof String) {
+           // currentBoardString = (String) theArg; 
+            //myCharArray = boardString.toCharArray(
+            repaint(); 
+        }
+        
+    }
+    
+    @Override
+    public void paintComponent(final Graphics theGraphics) {
+        super.paintComponent(theGraphics);
+        final Graphics2D g2d = (Graphics2D) theGraphics; 
+        final int thick = 3;
+        g2d.setColor(WHITE);
+        g2d.drawRect(50, 50, myWidth, myHeight);
+        g2d.setStroke(new BasicStroke(thick));
+        
+      
+        
+        currentBoardString = myBoard.toString();
+        //g2d.drawString(currentBoardString, 50, 50); 
+        
+        System.out.println(currentBoardString); 
+        
+        int row = 0;
+        int col = 0;
+        
+        for (final char c : currentBoardString.toCharArray()) {
+            
+            if (myTetrisPieces.containsKey(c)) {
+               // final Rectangle rect = new Rectangle(col * myBlockSize, row * myBlockSize, 
+                                                  //  myBlockSize, myBlockSize);
+                g2d.setColor(myTetrisPieces.get(c));
+                //g2d.draw(rect);
+               // g2d.setColor(myTetrisPieces.get(c).get(1));
+                g2d.fillRect(col * myBlockSize, row * myBlockSize, 
+                             myBlockSize, myBlockSize);
+            }
+            
+            if (c == '\n') {
+                col = 0;
+                row++;
+            }
+            col++; 
+        }
+        
+    }
+    
+//    private class MoveKeyListener extends KeyAdapter {
+//        
+//        public void keyPressed(final KeyEvent theEvent) {
+//            if (theEvent.getKeyCode() == KeyEvent.VK_UP
+//                            || theEvent.getKeyCode() == KeyEvent.VK_W) {
+//                myBoard.rotate();
+//                
+//            } else if (theEvent.getKeyCode() == KeyEvent.VK_RIGHT
+//                            || theEvent.getKeyCode() == KeyEvent.VK_D) {
+//                myBoard.right();
+//                
+//            } else if (theEvent.getKeyCode() == KeyEvent.VK_LEFT
+//                            || theEvent.getKeyCode() == KeyEvent.VK_A) {
+//                
+//                myBoard.left();
+//                
+//            } else if (theEvent.getKeyCode() == KeyEvent.VK_DOWN
+//                            || theEvent.getKeyCode() == KeyEvent.VK_S) {
+//                myBoard.down();
+//            }
+//        }
+//    }// End MoveKeyListener
+    
+    private class TimeListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(final ActionEvent theEvent) {
+            // Keep falling 
+            myBoard.down(); 
+            repaint();
+        }
+        
+    }
+}
