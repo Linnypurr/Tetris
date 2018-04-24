@@ -81,7 +81,7 @@ public class UpNextPanel extends JPanel implements Observer {
     private void getTetrisPieces() {
         
         myTetrisMap = new HashMap<>(); 
-        final Color brightOrange = new Color(219, 65, 0); 
+        final Color brightOrange = new Color(255, 195, 0); 
         final Color lightBlue = new Color(96, 255, 233); 
         final Color magenta = new Color(246, 92, 235); 
         final Color lightGreen = new Color(65, 219, 0);

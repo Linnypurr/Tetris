@@ -60,13 +60,16 @@ public class TetrisGUI implements Observer {
     private static final int TWENTY_TWO = 22; 
     
     /** Magic number 300. */
-    private static final int THREE_HUNDRED = 300; 
+    private static final int SCORE_PANEL_SIZE = 300; 
+    
+    /** Magic number 300. */
+    private static final int INSTRUCTION_X_SIZE = 300;
     
     /** Magic number 400. */
-    private static final int FOUR_HUNDRED = 400; 
+    private static final int MUSIC_JPANEL_DIMENSION = 200; 
     
     /** Magic number 600. */
-    private static final int SIX_HUNDRED = 600;
+    private static final int INSTRUCTION_Y_SIZE = 600;
     
     /** Font size. */
     private static final int FONT_SIZE = 12; 
@@ -84,7 +87,7 @@ public class TetrisGUI implements Observer {
     private static final char LEFT = '\u2B60';
     
     /**Background color. */
-    private static final Color DARK_PURPLE = new Color(28, 0, 38); 
+    private static final Color DARK_PURPLE_BACKGROUND = new Color(28, 0, 38); 
     
     /**Border color. */
     private static final Color WHITE = new Color(255, 255, 255); 
@@ -146,7 +149,7 @@ public class TetrisGUI implements Observer {
         myBoardPanel.setFocusable(true);
         myMainFrame.setPreferredSize(new Dimension(myWidth, myHeight));
         myMainFrame.setResizable(false);
-        myMainFrame.getContentPane().setBackground(DARK_PURPLE);
+        myMainFrame.getContentPane().setBackground(DARK_PURPLE_BACKGROUND);
         myMainFrame.setLocationRelativeTo(null);
         myMainFrame.setVisible(true);
         
@@ -195,20 +198,11 @@ public class TetrisGUI implements Observer {
         final JPanel eastPanel = new JPanel(); 
         final BoxLayout boxLayout = new BoxLayout(eastPanel, BoxLayout.PAGE_AXIS); 
         eastPanel.setLayout(boxLayout);
-        eastPanel.setBackground(DARK_PURPLE);
+        eastPanel.setBackground(DARK_PURPLE_BACKGROUND);
         
-        eastPanel.add(theUPanel); 
-        
-//        eastPanel.add(Box.createVerticalStrut(5)); 
-        
+        eastPanel.add(theUPanel);       
         eastPanel.add(theSPanel); 
-        
-//        eastPanel.add(Box.createVerticalStrut(5));
-        
         eastPanel.add(setMusic());
-        
-//        eastPanel.add(Box.createVerticalStrut(5));
-
         eastPanel.add(setInstructions());
         
         return eastPanel; 
@@ -222,21 +216,22 @@ public class TetrisGUI implements Observer {
     
     private JPanel setMusic() {
         final JPanel musicPanel = new JPanel(); 
-        musicPanel.setPreferredSize(new Dimension(200, 200));
+        musicPanel.setPreferredSize(new Dimension(
+            MUSIC_JPANEL_DIMENSION, MUSIC_JPANEL_DIMENSION)); 
         final TitledBorder titleBorder = BorderFactory.createTitledBorder(myLineBorder, 
                  " Music: ", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER); 
         titleBorder.setTitleColor(WHITE);
         titleBorder.setTitleFont(myFont); 
-        musicPanel.setBackground(DARK_PURPLE); 
+        musicPanel.setBackground(DARK_PURPLE_BACKGROUND); 
         musicPanel.setBorder(
                       BorderFactory.createCompoundBorder(myEmptyBorder, titleBorder));
         musicPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        final PlayMusic music = new PlayMusic();
         final JButton playButton = new JButton("Play music");
         musicPanel.add(playButton);
         playButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(final ActionEvent theEvent) {
-                final PlayMusic music = new PlayMusic(); 
+            public void actionPerformed(final ActionEvent theEvent) { 
                 music.startMusic();
             }
         });
@@ -245,7 +240,7 @@ public class TetrisGUI implements Observer {
         pauseButton.addActionListener(new ActionListener() {
             @Override 
             public void actionPerformed(final ActionEvent theEvent) {
-               
+                music.pauseMusic();
             }
         });
         return musicPanel; 
@@ -260,7 +255,7 @@ public class TetrisGUI implements Observer {
      */
     private JPanel setInstructions() {
         final JPanel instructPanel = new JPanel(); 
-        instructPanel.setPreferredSize(new Dimension(THREE_HUNDRED, SIX_HUNDRED));
+        instructPanel.setPreferredSize(new Dimension(INSTRUCTION_X_SIZE, INSTRUCTION_Y_SIZE));
         final TitledBorder titleBorder = BorderFactory.createTitledBorder(myLineBorder, 
              " How to play: ", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER); 
         titleBorder.setTitleColor(WHITE);
@@ -269,7 +264,7 @@ public class TetrisGUI implements Observer {
                   BorderFactory.createCompoundBorder(myEmptyBorder, titleBorder));
         final BoxLayout boxLayout = new BoxLayout(instructPanel, BoxLayout.PAGE_AXIS); 
         instructPanel.setLayout(boxLayout);
-        instructPanel.setBackground(DARK_PURPLE); 
+        instructPanel.setBackground(DARK_PURPLE_BACKGROUND); 
         
         //JTextArea
         final JTextArea text = new JTextArea(); 
@@ -278,7 +273,7 @@ public class TetrisGUI implements Observer {
             + "\nMove left: " + LEFT + " or A\n" + "Speed down: " + DOWN +  " or S"
             + "\nDrop: Space \nPause: P \n\nOne line = 100 points\nTetris = 800 points");
         text.setForeground(WHITE);
-        text.setBackground(DARK_PURPLE);
+        text.setBackground(DARK_PURPLE_BACKGROUND);
         text.setFont(myFont); 
         instructPanel.add(text); 
 
@@ -326,11 +321,11 @@ public class TetrisGUI implements Observer {
     private void printHighScores() {
         final JDialog dialogBox = new JDialog();
         dialogBox.setLayout(new BoxLayout(dialogBox.getContentPane(), BoxLayout.PAGE_AXIS));
-        dialogBox.setBackground(DARK_PURPLE);
+        dialogBox.setBackground(DARK_PURPLE_BACKGROUND);
         dialogBox.setVisible(true);
         dialogBox.setTitle("High Scores: ");
         dialogBox.setFont(myFont);
-        dialogBox.setSize(THREE_HUNDRED, THREE_HUNDRED);
+        dialogBox.setSize(SCORE_PANEL_SIZE, SCORE_PANEL_SIZE);
         
         final JLabel highScoreLabel = new JLabel("High Scores: \n");
         dialogBox.add(highScoreLabel);
@@ -347,7 +342,7 @@ public class TetrisGUI implements Observer {
                 userLabel.setText(count + " " + user);
                 count++;
                 userLabel.setFont(myFont);
-                userLabel.setBackground(DARK_PURPLE);
+                userLabel.setBackground(DARK_PURPLE_BACKGROUND);
                 System.out.println("added user");
                 dialogBox.add(userLabel);
             }

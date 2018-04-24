@@ -12,7 +12,7 @@ import sun.audio.AudioStream;
 public class PlayMusic {
     
     /** Input Stream for the .wav file.*/
-    private InputStream myStream = null;
+    private InputStream myStream;
     
     /** Audio Stream. */
     private AudioStream myAudioStream;
@@ -40,5 +40,16 @@ public class PlayMusic {
     /** Starts music. */ 
     public void startMusic() {
         myAudioPlayer.start(myAudioStream);
+    }
+    
+    /** Pauses music. */
+    public void pauseMusic() {
+        if (myAudioStream != null) {
+//            try {
+//                //myAudioPlayer.wait();
+//            } catch (final InterruptedException e) {
+//                e.printStackTrace();
+//            } 
+        }
     }
 }
