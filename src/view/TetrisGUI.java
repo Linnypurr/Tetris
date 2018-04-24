@@ -3,19 +3,39 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import model.Board;
+import sun.audio.AudioData;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+import sun.audio.ContinuousAudioDataStream;
 
 //import view.BoardPanel.MoveKeyListener;
 
@@ -41,6 +61,9 @@ public class TetrisGUI implements Observer {
     
     /** Magic number 300. */
     private static final int THREE_HUNDRED = 300; 
+    
+    /** Magic number 400. */
+    private static final int FOUR_HUNDRED = 400; 
     
     /** Magic number 600. */
     private static final int SIX_HUNDRED = 600;
@@ -101,6 +124,10 @@ public class TetrisGUI implements Observer {
     
     /** Instance of the preview panel. */
     private UpNextPanel myUpNextPanel; 
+    
+    /** For getting user input. */
+    private String myUsersName = ""; 
+     
     
     /** 
      * Method to start the creation of the GUI. 
@@ -172,17 +199,58 @@ public class TetrisGUI implements Observer {
         
         eastPanel.add(theUPanel); 
         
-        eastPanel.add(Box.createVerticalStrut(FIFTY)); 
+//        eastPanel.add(Box.createVerticalStrut(5)); 
         
         eastPanel.add(theSPanel); 
         
-        eastPanel.add(Box.createVerticalStrut(FIFTY));
+//        eastPanel.add(Box.createVerticalStrut(5));
+        
+        eastPanel.add(setMusic());
+        
+//        eastPanel.add(Box.createVerticalStrut(5));
 
         eastPanel.add(setInstructions());
         
         return eastPanel; 
         
     }
+    /**
+     * JPanel to create music option buttons.
+     * 
+     * @return music panel
+     */
+    
+    private JPanel setMusic() {
+        final JPanel musicPanel = new JPanel(); 
+        musicPanel.setPreferredSize(new Dimension(200, 200));
+        final TitledBorder titleBorder = BorderFactory.createTitledBorder(myLineBorder, 
+                 " Music: ", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER); 
+        titleBorder.setTitleColor(WHITE);
+        titleBorder.setTitleFont(myFont); 
+        musicPanel.setBackground(DARK_PURPLE); 
+        musicPanel.setBorder(
+                      BorderFactory.createCompoundBorder(myEmptyBorder, titleBorder));
+        musicPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        final JButton playButton = new JButton("Play music");
+        musicPanel.add(playButton);
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent theEvent) {
+                final PlayMusic music = new PlayMusic(); 
+                music.startMusic();
+            }
+        });
+        final JButton pauseButton = new JButton("Pause music");
+        musicPanel.add(pauseButton);
+        pauseButton.addActionListener(new ActionListener() {
+            @Override 
+            public void actionPerformed(final ActionEvent theEvent) {
+               
+            }
+        });
+        return musicPanel; 
+    }
+
     
     /**
      * JPanel to create Instruction Panel on
@@ -214,7 +282,7 @@ public class TetrisGUI implements Observer {
         text.setFont(myFont); 
         instructPanel.add(text); 
 
-        return instructPanel; 
+        return instructPanel;  
     }
    
     /** Sees if the game is over. */ 
@@ -232,11 +300,62 @@ public class TetrisGUI implements Observer {
                 if (choice == 0) {
                     myMainFrame.dispose();  
                     new TetrisGUI().start();     
+                } else {
+                    myUsersName = JOptionPane.showInputDialog("Please enter your name: ");
+                    try {
+                        final FileWriter writeScores = new FileWriter("Highscore.txt", true);
+                        writeScores.write(myUsersName + " " + myScorePanel.getScore() + "\n");
+                        writeScores.close(); 
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
+                    
+                    printHighScores(); 
                 }
                 
               
             }
         }
+        
+    }
+    
+    /**
+     * Private Method to show off high scores. 
+     *
+     */
+    private void printHighScores() {
+        final JDialog dialogBox = new JDialog();
+        dialogBox.setLayout(new BoxLayout(dialogBox.getContentPane(), BoxLayout.PAGE_AXIS));
+        dialogBox.setBackground(DARK_PURPLE);
+        dialogBox.setVisible(true);
+        dialogBox.setTitle("High Scores: ");
+        dialogBox.setFont(myFont);
+        dialogBox.setSize(THREE_HUNDRED, THREE_HUNDRED);
+        
+        final JLabel highScoreLabel = new JLabel("High Scores: \n");
+        dialogBox.add(highScoreLabel);
+        int count = 1; 
+        try {
+            final FileReader readScores = new FileReader("Highscore.txt");
+            final BufferedReader bufferedReader = new BufferedReader(readScores); 
+            
+            String user;
+            while ((user = bufferedReader.readLine()) != null) {
+                System.out.println(user);
+                JLabel userLabel = new JLabel(); 
+                userLabel.setHorizontalTextPosition(JLabel.CENTER);
+                userLabel.setText(count + " " + user);
+                count++;
+                userLabel.setFont(myFont);
+                userLabel.setBackground(DARK_PURPLE);
+                System.out.println("added user");
+                dialogBox.add(userLabel);
+            }
+            readScores.close();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+
         
     }
         

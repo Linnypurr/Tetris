@@ -33,7 +33,7 @@ public class UpNextPanel extends JPanel implements Observer {
 
     /**Background color. */
     private static final Color DARK_PURPLE = new Color(28, 0, 38); 
-    
+     
     /**Border color. */
     private static final Color WHITE = new Color(255, 255, 255); 
     

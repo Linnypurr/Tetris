@@ -39,7 +39,7 @@ public class BoardPanel extends JPanel implements Observer {
     /** Background Color of GUI and Panels. */
     private static final Color DARK_PURPLE = new Color(28, 0, 38); 
     
-    /** Border Color. */
+    /** Border Color. */ 
     private static final Color WHITE = new Color(255, 255, 255); 
     
     /** Instance of Board class. */ 

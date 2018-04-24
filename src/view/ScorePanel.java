@@ -28,7 +28,7 @@ public class ScorePanel extends JPanel implements Observer {
     private static final long serialVersionUID = 6535364451262812255L;
 
     /** Magic number 4. */
-    private static final int FOUR = 4; 
+    private static final int FOUR = 4;  
     
     /** Magic number 2. */
     private static final int TWO = 2; 
@@ -86,7 +86,6 @@ public class ScorePanel extends JPanel implements Observer {
     public void paintComponent(final Graphics theGraphics) {
         super.paintComponent(theGraphics);
         final Graphics2D g2d = (Graphics2D) theGraphics; 
-        //final String stringTest = "One line = 100 points\nTetris = 800 points"; 
         g2d.setFont(myFont);
         g2d.setColor(WHITE);
         g2d.drawString("Current Score: " +  myScore, getWidth() / FOUR, getHeight() / TWO);
@@ -107,6 +106,14 @@ public class ScorePanel extends JPanel implements Observer {
                 repaint(); 
             }
         }
+    }
+    /** 
+     *  Get the users Score.
+     *  
+     * @return int myScore
+     */
+    public int getScore() {
+        return myScore;
     }
     
     /**
