@@ -128,6 +128,9 @@ public class TetrisGUI implements Observer {
     /** Instance of the preview panel. */
     private UpNextPanel myUpNextPanel; 
     
+    /** Instance of music panel. */ 
+    private MusicPanel myMusicPanel; 
+    
     /** For getting user input. */
     private String myUsersName = ""; 
      
@@ -142,6 +145,7 @@ public class TetrisGUI implements Observer {
         myBoardPanel = new BoardPanel(myBoard, myPickedSize); 
         myScorePanel = new ScorePanel(); 
         myUpNextPanel = new UpNextPanel(); 
+        myMusicPanel = new MusicPanel(); 
         myBoard.addObserver(this);
         myBoard.addObserver(myBoardPanel);
         myBoard.addObserver(myScorePanel); 
@@ -156,13 +160,15 @@ public class TetrisGUI implements Observer {
         myMainFrame.setLayout(new BorderLayout());
         myMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         myMainFrame.add(myBoardPanel, BorderLayout.CENTER);
-        myMainFrame.add(setEastPanel(myScorePanel, myUpNextPanel), BorderLayout.EAST); 
+        myMainFrame.add(setEastPanel(), BorderLayout.EAST); 
         myBoard.newGame();
         myBoardPanel.requestFocusInWindow();
         myMainFrame.pack();
         
     }
     
+    //final JPanel theSPanel, 
+//    final JPanel theUPanel, final JPanel theMPanel
     
     /**
      * Method to have user decide on board size. 
@@ -191,61 +197,24 @@ public class TetrisGUI implements Observer {
      * Method to create Panel in the East of the GUI. 
      * 
      * @param theSPanel for scoring. 
-     * @param theUPanel for piece preview. 
+     * @param theUPanel for piece preview.
+     * @param theMPanel for music. 
      * @return JPanel for mainframe. 
      */
-    private JPanel setEastPanel(final JPanel theSPanel, final JPanel theUPanel) {
+    private JPanel setEastPanel() {
         final JPanel eastPanel = new JPanel(); 
         final BoxLayout boxLayout = new BoxLayout(eastPanel, BoxLayout.PAGE_AXIS); 
         eastPanel.setLayout(boxLayout);
         eastPanel.setBackground(DARK_PURPLE_BACKGROUND);
         
-        eastPanel.add(theUPanel);       
-        eastPanel.add(theSPanel); 
-        eastPanel.add(setMusic());
+        eastPanel.add(myUpNextPanel);       
+        eastPanel.add(myScorePanel); 
+        eastPanel.add(myMusicPanel);
         eastPanel.add(setInstructions());
         
         return eastPanel; 
         
     }
-    /**
-     * JPanel to create music option buttons.
-     * 
-     * @return music panel
-     */
-    
-    private JPanel setMusic() {
-        final JPanel musicPanel = new JPanel(); 
-        musicPanel.setPreferredSize(new Dimension(
-            MUSIC_JPANEL_DIMENSION, MUSIC_JPANEL_DIMENSION)); 
-        final TitledBorder titleBorder = BorderFactory.createTitledBorder(myLineBorder, 
-                 " Music: ", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.CENTER); 
-        titleBorder.setTitleColor(WHITE);
-        titleBorder.setTitleFont(myFont); 
-        musicPanel.setBackground(DARK_PURPLE_BACKGROUND); 
-        musicPanel.setBorder(
-                      BorderFactory.createCompoundBorder(myEmptyBorder, titleBorder));
-        musicPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        final PlayMusic music = new PlayMusic();
-        final JButton playButton = new JButton("Play music");
-        musicPanel.add(playButton);
-        playButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent theEvent) { 
-                music.startMusic();
-            }
-        });
-        final JButton pauseButton = new JButton("Pause music");
-        musicPanel.add(pauseButton);
-        pauseButton.addActionListener(new ActionListener() {
-            @Override 
-            public void actionPerformed(final ActionEvent theEvent) {
-                music.pauseMusic();
-            }
-        });
-        return musicPanel; 
-    }
-
     
     /**
      * JPanel to create Instruction Panel on
@@ -293,9 +262,11 @@ public class TetrisGUI implements Observer {
                             JOptionPane.YES_NO_OPTION, JOptionPane.DEFAULT_OPTION,
                             null, options, options[0]); 
                 if (choice == 0) {
+                    myMusicPanel.myMusic.pauseMusic();
                     myMainFrame.dispose();  
                     new TetrisGUI().start();     
                 } else {
+                    myMusicPanel.myMusic.pauseMusic();
                     myUsersName = JOptionPane.showInputDialog("Please enter your name: ");
                     try {
                         final FileWriter writeScores = new FileWriter("Highscore.txt", true);

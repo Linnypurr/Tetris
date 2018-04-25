@@ -69,9 +69,6 @@ public class BoardPanel extends JPanel implements Observer {
     /** KeyAdapter of pause. */
     private KeyAdapter myPauseKey = new PauseKeyListener(); 
     
-    /** Game over boolean. */ 
-    private Boolean myGameOver; 
- 
     
     /** String for boards toString. */
     private String myCurrentBoardString; 
@@ -104,7 +101,6 @@ public class BoardPanel extends JPanel implements Observer {
     
     /** Helper method to initialize other methods. */
     private void initialize() {
-        myGameOver = false;
         myTimer = new Timer(ONE_THOUSAND, new TimeListener()); 
         myTimer.start();
         myBoard.newGame();
