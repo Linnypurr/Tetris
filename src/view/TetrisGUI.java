@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Stack;
+import java.util.TreeMap;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -31,6 +34,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
+
 import model.Board;
 import sun.audio.AudioData;
 import sun.audio.AudioPlayer;
@@ -63,10 +69,7 @@ public class TetrisGUI implements Observer {
     private static final int SCORE_PANEL_SIZE = 300; 
     
     /** Magic number 300. */
-    private static final int INSTRUCTION_X_SIZE = 300;
-    
-    /** Magic number 400. */
-    private static final int MUSIC_JPANEL_DIMENSION = 200; 
+    private static final int INSTRUCTION_X_SIZE = 300; 
     
     /** Magic number 600. */
     private static final int INSTRUCTION_Y_SIZE = 600;
@@ -110,9 +113,6 @@ public class TetrisGUI implements Observer {
     /** JFrame with title. */
     private final JFrame myMainFrame = new JFrame("Tetris");  
     
-    /** Boolean of game. */
-    private Boolean myGameOver; 
-    
     /** integer of users preferred size. */
     private  int myPickedSize; 
     
@@ -133,19 +133,25 @@ public class TetrisGUI implements Observer {
     
     /** For getting user input. */
     private String myUsersName = ""; 
+    
+    /** HashMap for organizing high scores. */ 
+    private TreeMap<Integer, String> myUsersMap; 
+    
+    /** Stack for organization. */ 
+    private Stack<Integer> myStack = new Stack<Integer>(); 
      
     
     /** 
      * Method to start the creation of the GUI. 
      */
     public void start() {
-        myPickedSize = panelDialog();
-        myGameOver = false; 
+        myPickedSize = panelDialog(); 
         myBoard = new Board();
         myBoardPanel = new BoardPanel(myBoard, myPickedSize); 
         myScorePanel = new ScorePanel(); 
         myUpNextPanel = new UpNextPanel(); 
         myMusicPanel = new MusicPanel(); 
+        myUsersMap = new TreeMap<>(); 
         myBoard.addObserver(this);
         myBoard.addObserver(myBoardPanel);
         myBoard.addObserver(myScorePanel); 
@@ -190,15 +196,12 @@ public class TetrisGUI implements Observer {
             size = TWENTY_TWO; 
         }
         
-        return size; 
+        return size;  
     } 
     
     /**
      * Method to create Panel in the East of the GUI. 
-     * 
-     * @param theSPanel for scoring. 
-     * @param theUPanel for piece preview.
-     * @param theMPanel for music. 
+     *
      * @return JPanel for mainframe. 
      */
     private JPanel setEastPanel() {
@@ -255,7 +258,6 @@ public class TetrisGUI implements Observer {
         if (theObs instanceof Board) {
             
             if (theArg instanceof Boolean) {
-                myGameOver = (Boolean) theArg;
                 final Object[] options = {"Yes", "No"};
                 final int choice = JOptionPane.showOptionDialog(null, 
                             "Game Over! Play again?", "Game Over", 
@@ -275,8 +277,7 @@ public class TetrisGUI implements Observer {
                     } catch (final IOException e) {
                         e.printStackTrace();
                     }
-                    
-                    printHighScores(); 
+                    listHighScores();  
                 }
                 
               
@@ -300,30 +301,54 @@ public class TetrisGUI implements Observer {
         
         final JLabel highScoreLabel = new JLabel("High Scores: \n");
         dialogBox.add(highScoreLabel);
-        int count = 1; 
-        try {
-            final FileReader readScores = new FileReader("Highscore.txt");
-            final BufferedReader bufferedReader = new BufferedReader(readScores); 
-            
-            String user;
-            while ((user = bufferedReader.readLine()) != null) {
-                System.out.println(user);
-                JLabel userLabel = new JLabel(); 
-                userLabel.setHorizontalTextPosition(JLabel.CENTER);
-                userLabel.setText(count + " " + user);
-                count++;
-                userLabel.setFont(myFont);
-                userLabel.setBackground(DARK_PURPLE_BACKGROUND);
-                System.out.println("added user");
-                dialogBox.add(userLabel);
-            }
-            readScores.close();
-        } catch (final IOException e) {
-            e.printStackTrace();
+        int count = 1;
+        
+        for (Integer i : myStack) {
+            final JLabel userLabel = new JLabel(); 
+            userLabel.setHorizontalTextPosition(JLabel.CENTER);
+            userLabel.setText(count + " " 
+                + myUsersMap.get(i) + " " + i);
+            count++;
+            userLabel.setFont(myFont);
+            userLabel.setBackground(DARK_PURPLE_BACKGROUND);
+            dialogBox.add(userLabel); 
         }
 
         
     }
+    
+    /**
+     * Organize and list high scores correctly. 
+     */
+    private void listHighScores() {
+        final Stack<Integer> firstStack = new Stack<Integer>();
+        try {
+            final FileReader readScores = new FileReader("Highscore.txt");
+            final BufferedReader bufferedReader = new BufferedReader(readScores); 
+            String user;
+            String[] stringArray = null; 
+            while ((user = bufferedReader.readLine()) != null) {
+                stringArray = user.split(" ", -2);
+                final Integer intScore = Integer.parseInt(stringArray[1]);
+                myUsersMap.put(intScore, stringArray[0]);
+            }
+           
+            readScores.close();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
         
-
+        
+        for (Integer i : myUsersMap.keySet()) {
+            if (i > 0) {
+                firstStack.push(i); 
+            }
+        }
+        
+        while (!firstStack.isEmpty()) {
+            myStack.push(firstStack.pop()); 
+        }
+        printHighScores(); 
+        
+    }
 }

@@ -2,4 +2,14 @@ Larry 0
 Joe 0
 Linny 2100
 Joe 300
-Tim 0
+Trevor 0
+Ryan 600
+Zack 0
+William 0
+Charlie 0
+Lee 0
+Everret 0
+Peter 0
+Ken 0
+Bob 100
+Sam 100
