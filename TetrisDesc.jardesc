@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="lindsp14-tetris/Tetris.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/lindsp14-tetris/TetrisDesc.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" mainClassHandleIdentifier="=lindsp14-tetris/src&lt;view{TetrisMain.java[TetrisMain" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <file path="/lindsp14-tetris/.checkstyle"/>
+        <file path="/lindsp14-tetris/.fbprefs"/>
+        <file path="/lindsp14-tetris/.project"/>
+        <folder path="/lindsp14-tetris/support_files"/>
+        <file path="/lindsp14-tetris/.pmd"/>
+        <folder path="/lindsp14-tetris/doc"/>
+        <javaElement handleIdentifier="=lindsp14-tetris/src"/>
+        <file path="/lindsp14-tetris/.classpath"/>
+    </selectedElements>
+</jardesc>

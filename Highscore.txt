@@ -13,3 +13,4 @@ Peter 0
 Ken 0
 Bob 100
 Sam 100
+null 0

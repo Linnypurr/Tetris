@@ -53,8 +53,8 @@ import sun.audio.ContinuousAudioDataStream;
  */
 public class TetrisGUI implements Observer {
     
-    /** Magic number 50. */
-    private static final int FIFTY = 50; 
+    /** Magic number -2. */
+    private static final int STRING_LIMIT = -2; 
     
     /** Small board. */
     private static final int FIFTEEN = 15; 
@@ -173,7 +173,7 @@ public class TetrisGUI implements Observer {
         
     }
     
-    //final JPanel theSPanel, 
+    //final JPanel theSPanel,  
 //    final JPanel theUPanel, final JPanel theMPanel
     
     /**
@@ -264,11 +264,11 @@ public class TetrisGUI implements Observer {
                             JOptionPane.YES_NO_OPTION, JOptionPane.DEFAULT_OPTION,
                             null, options, options[0]); 
                 if (choice == 0) {
-                    myMusicPanel.myMusic.pauseMusic();
+                    myMusicPanel.getMyMusic().pauseMusic();
                     myMainFrame.dispose();  
                     new TetrisGUI().start();     
                 } else {
-                    myMusicPanel.myMusic.pauseMusic();
+                    myMusicPanel.getMyMusic().pauseMusic();
                     myUsersName = JOptionPane.showInputDialog("Please enter your name: ");
                     try {
                         final FileWriter writeScores = new FileWriter("Highscore.txt", true);
@@ -328,7 +328,7 @@ public class TetrisGUI implements Observer {
             String user;
             String[] stringArray = null; 
             while ((user = bufferedReader.readLine()) != null) {
-                stringArray = user.split(" ", -2);
+                stringArray = user.split(" ", STRING_LIMIT);
                 final Integer intScore = Integer.parseInt(stringArray[1]);
                 myUsersMap.put(intScore, stringArray[0]);
             }

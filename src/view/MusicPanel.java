@@ -36,6 +36,9 @@ public class MusicPanel extends JPanel {
      /**Border color. */
     private static final Color WHITE = new Color(255, 255, 255);
     
+    /**Instance of PlayMusic. */
+    private PlayMusic myMusic = new PlayMusic();
+    
     /** Line Border. */ 
     private final Border myLineBorder = BorderFactory.createLineBorder(WHITE, 3);
     
@@ -48,10 +51,7 @@ public class MusicPanel extends JPanel {
     
     /** Default font used. */ 
     private final Font myFont = new Font("Monospace", Font.BOLD, FONT_SIZE);
-    
-    /**Instance of PlayMusic. */
-    public PlayMusic myMusic = new PlayMusic();
-    
+     
     /** Enable or disable buttons. */ 
     private boolean myToggleButton; 
     
@@ -74,6 +74,15 @@ public class MusicPanel extends JPanel {
     }
     
     /**
+     * So I can stop the music outside of the class. 
+     * 
+     * @return myMusic. 
+     */
+    public PlayMusic getMyMusic() {
+        return myMusic; 
+    }
+    
+    /**
      * Private method to play music.
      * 
      * @return Button for users to play. 
@@ -84,10 +93,10 @@ public class MusicPanel extends JPanel {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent theEvent) { 
-                myMusic.startMusic();
-                
+                myMusic.startMusic(); 
             }
         });
+        playButton.setEnabled(myToggleButton);
         return playButton;
     }
     
@@ -102,9 +111,10 @@ public class MusicPanel extends JPanel {
         pauseButton.addActionListener(new ActionListener() {
             @Override 
             public void actionPerformed(final ActionEvent theEvent) {
-                myMusic.pauseMusic();
+                myMusic.pauseMusic(); 
             }
         });
+        pauseButton.setEnabled(myToggleButton);
         return pauseButton; 
     }
 }
